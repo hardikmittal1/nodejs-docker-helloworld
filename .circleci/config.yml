@@ -1,0 +1,51 @@
+# This config is equivalent to both the '.circleci/extended/orb-free.yml' and the base '.circleci/config.yml'
+version: 2.1
+
+orbs:
+  gcp-gcr: circleci/gcp-gcr@0.13.0
+jobs:
+  node-job:
+    docker:
+     - image: cimg/base:stable
+    steps:
+      - checkout
+      - setup_remote_docker:
+         version: 19.03.13
+      - run:
+          name:  installing dependencies
+          command:
+            |
+
+
+
+  example-job:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - setup_remote_docker:
+         version: 19.03.13
+      - run:
+          name: Build app binary and Docker image
+          command:
+            | 
+            echo ${GCP_PROJECT_KEY} > $HOME/gcloud-service-key.json
+      - gcp-gcr/build-image:
+          docker-context: . 
+          google-project-id: GOOGLE_PROJECT_ID 
+          image: node-app 
+          registry-url: gcr.io 
+          tag: latest 
+      - gcp-gcr/gcr-auth:
+          google-project-id: GOOGLE_PROJECT_ID 
+          google-compute-zone: GOOGLE_COMPUTE_ZONE 
+          gcloud-service-key: GCP_PROJECT_KEY
+      - gcp-gcr/push-image:
+          registry-url: gcr.io 
+          image: node-app
+          google-project-id: GOOGLE_PROJECT_ID 
+workflows:
+  sample:
+    jobs:
+      - example-job:
+         context: gcp
