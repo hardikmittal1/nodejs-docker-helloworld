@@ -1,13 +1,29 @@
-var express = require('express');
+const express = require('express');
+const app = express();
 
-// Constants
-var PORT = 8080;
+app.get('/', (req, res) => {
+  console.log('Hello world received a request.');
 
-// App
-var app = express();
-app.get('/', function (req, res) {
-    res.send('Hello world\n');
+  const target = process.env.TARGET || 'World';
+  res.send(`Hello ${target}!`);
 });
 
-app.listen(PORT);
-console.log('Running on ' + PORT);
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log('Hello world listening on port', port);
+});
+
+
+// var express = require('express');
+
+// // Constants
+// var PORT = 8080;
+
+// // App
+// var app = express();
+// app.get('/', function (req, res) {
+//     res.send('Hello world\n');
+// });
+
+// app.listen(PORT);
+// console.log('Running on ' + PORT);
